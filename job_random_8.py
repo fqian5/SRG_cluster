@@ -1,5 +1,5 @@
 from srg import generate_random_pauli_sum
-from srg import srg_mielke
+from srg import srg_mielke, mielke_generator
 from scipy.sparse.linalg import eigsh
 import matplotlib.pyplot as plt
 from qiskit.quantum_info import SparsePauliOp
@@ -8,6 +8,7 @@ import numpy as np
 from symmer import PauliwordOp
 import json
 import pickle
+from scipy.integrate import RK45
 
 # Parameters
 job_id = 8
@@ -21,6 +22,8 @@ random_ham = generate_random_pauli_sum(n_qubits=n_qubits, n_terms=n_terms, coeff
 H = PauliwordOp.from_dictionary(random_ham)
 
 H_mat = H.to_sparse_matrix
+N = H_mat.shape[0]
+N2 = N**2
 
 # Data storage
 num_paulis = []
@@ -28,9 +31,46 @@ H_pauli_list = []
 
 print("Starting SRG iterations...")
 start_time = time.time()
+H0 = H_mat
+gs_support = []
 
-for i in range(2000):
-    H_final, _ = srg_mielke(H_mat, stepsize=0.02, number_of_steps=2)
+def derivativeOfHt(t, H_coords):
+    h = H_coords.reshape(N, N)
+
+    # g = np.diag(np.diag(h)) @ h - h @ np.diag(np.diag(h))
+    g = mielke_generator(h)
+    dh = g @ h - h @ g
+    return dh.reshape(N2)
+
+s = RK45(derivativeOfHt, 0.0, H0.reshape(N2), 100.0, rtol = 1e-10, atol = 1e-15)
+res_t = []
+res_y = []
+for i in range(5_000):
+    res_t.append(s.t)
+    res_y.append(s.y)
+    if i % 1 == 0:
+        # print('t_' + str(i), '=', res_t[-1])
+        pass
+    s.step()
+    if s.status == 'finished':
+        res_t.append(s.t)
+        res_y.append(s.y)
+        print('Finished')
+        break
+    if s.status == 'failed':
+        print('Failed at step', i, 't =', s.t)
+        break
+    if i % 500 == 0:
+        # e_gs_W, psi_gs_W = exact_gs_energy(s.y.reshape(N, N).real)
+        # psi_gs_W = psi_gs_W.cleanup(zero_threshold = 1e-9)
+        # # psi_gs_W.cleanup(zero_threshold=1e-9)
+        # # psi_gs_W.sort(),
+        # gs_support.append(psi_gs_W.n_terms)
+        pass
+
+iteration = 1
+for i in res_t:
+    H_final, _ = srg_mielke(H_mat, stepsize=i, number_of_steps=2)
     eigenvals, eigenvecs = eigsh(H_final, k=4, which='SA')
     h_pauli = SparsePauliOp.from_operator(H_final.todense())
 
@@ -38,8 +78,8 @@ for i in range(2000):
     num_paulis.append(num_terms_current)
     H_pauli_list.append(h_pauli.to_list())
 
-    print(f"Iteration {i}: {num_terms_current} Pauli terms")
-
+    print(f"Iteration {iteration}: {num_terms_current} Pauli terms")
+    iteration += 1
     H_mat = H_final
 
 end_time = time.time()
@@ -48,7 +88,7 @@ print(f"Total execution time: {elapsed_time:.4f} seconds")
 
 # Plot number of Pauli terms
 plt.figure(figsize=(10, 6))
-plt.plot(range(2000), num_paulis, 'b-', linewidth=1.5)
+plt.plot(range(len(res_t)), num_paulis, 'b-', linewidth=1.5)
 plt.xlabel('Iteration', fontsize=12)
 plt.ylabel('Number of Pauli Terms', fontsize=12)
 plt.title(f'Random Hamiltonian {job_id} (seed={seed}): Number of Pauli Terms vs SRG Iteration', fontsize=14)

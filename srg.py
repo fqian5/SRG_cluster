@@ -97,3 +97,4 @@ def generate_random_pauli_sum(n_qubits, n_terms, coeff_scale=1.0, seed=None):
             pauli_sum[pauli_string] = [real_coeff, imag_coeff]
     
     return pauli_sum
+
