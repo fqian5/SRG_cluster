@@ -1,24 +1,8 @@
-/cluster/tufts/lovelab/fqian03/condaenv/gap/lib/python3.9/site-packages/scipy/sparse/linalg/_dsolve/linsolve.py:347: SparseEfficiencyWarning: splu converted its input to CSC format
-  warn('splu converted its input to CSC format', SparseEfficiencyWarning)
-/cluster/tufts/lovelab/fqian03/condaenv/gap/lib/python3.9/site-packages/scipy/sparse/linalg/_dsolve/linsolve.py:239: SparseEfficiencyWarning: spsolve is more efficient when sparse b is in the CSC matrix format
-  warn('spsolve is more efficient when sparse b '
 Traceback (most recent call last):
-  File "/cluster/tufts/lovelab/fqian03/SRG_cluster/job_random_0.py", line 74, in <module>
-    json.dump(results, f, indent=2)
-  File "/cluster/tufts/lovelab/fqian03/condaenv/gap/lib/python3.9/json/__init__.py", line 179, in dump
-    for chunk in iterable:
-  File "/cluster/tufts/lovelab/fqian03/condaenv/gap/lib/python3.9/json/encoder.py", line 431, in _iterencode
-    yield from _iterencode_dict(o, _current_indent_level)
-  File "/cluster/tufts/lovelab/fqian03/condaenv/gap/lib/python3.9/json/encoder.py", line 405, in _iterencode_dict
-    yield from chunks
-  File "/cluster/tufts/lovelab/fqian03/condaenv/gap/lib/python3.9/json/encoder.py", line 325, in _iterencode_list
-    yield from chunks
-  File "/cluster/tufts/lovelab/fqian03/condaenv/gap/lib/python3.9/json/encoder.py", line 325, in _iterencode_list
-    yield from chunks
-  File "/cluster/tufts/lovelab/fqian03/condaenv/gap/lib/python3.9/json/encoder.py", line 325, in _iterencode_list
-    yield from chunks
-  File "/cluster/tufts/lovelab/fqian03/condaenv/gap/lib/python3.9/json/encoder.py", line 438, in _iterencode
-    o = _default(o)
-  File "/cluster/tufts/lovelab/fqian03/condaenv/gap/lib/python3.9/json/encoder.py", line 179, in default
-    raise TypeError(f'Object of type {o.__class__.__name__} '
-TypeError: Object of type complex is not JSON serializable
+  File "/cluster/tufts/lovelab/fqian03/SRG_cluster/job_random_0.py", line 42, in <module>
+    s = RK45(derivativeOfHt, 0.0, H0.reshape(N2), 100.0, rtol = 1e-10, atol = 1e-15)
+  File "/cluster/tufts/lovelab/fqian03/condaenv/gap/lib/python3.9/site-packages/scipy/sparse/_base.py", line 158, in reshape
+    shape = check_shape(args, self.shape)
+  File "/cluster/tufts/lovelab/fqian03/condaenv/gap/lib/python3.9/site-packages/scipy/sparse/_sputils.py", line 336, in check_shape
+    raise ValueError('matrix shape must be two-dimensional')
+ValueError: matrix shape must be two-dimensional

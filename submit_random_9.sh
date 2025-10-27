@@ -4,7 +4,7 @@
 #SBATCH -N 1 # nodes requested
 #SBATCH -n 1 # tasks requested
 #SBATCH -c 5 # cores requested
-#SBATCH -t 7-00:00:00
+#SBATCH -t 3-00:00:00
 #SBATCH --mem=500000 # memory in Mb
 #SBATCH -o outputfile_random_9.out # send stdout to outfile
 #SBATCH -e errfile_random_9.out  # send stderr to errfile
