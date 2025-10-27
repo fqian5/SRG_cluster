@@ -14,7 +14,7 @@ from scipy.integrate import RK45
 job_id = 0
 seed = 1000 + job_id
 n_qubits = 8
-n_terms = 200
+n_terms = 2
 coeff_scale = 0.05
 
 print(f"Job {job_id}: Generating random Hamiltonian with seed {seed}")
@@ -30,11 +30,11 @@ H_pauli_list = []
 
 print("Starting SRG iterations...")
 start_time = time.time()
-H0 = H_mat
+H0 = H_mat.toarray()  # Convert sparse matrix to dense array
 gs_support = []
 def derivativeOfHt(t, H_coords):
     h = H_coords.reshape(N, N)
-    
+
     # g = np.diag(np.diag(h)) @ h - h @ np.diag(np.diag(h))
     g = mielke_generator(h)
     dh = g @ h - h @ g
