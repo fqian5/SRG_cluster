@@ -72,9 +72,12 @@ for i in range(5_000):
         # gs_support.append(psi_gs_W.n_terms)
         pass
 
+# Calculate time differences
+time_diffs = [res_t[i+1] - res_t[i] for i in range(len(res_t)-1)]
+
 iteration = 1
-for i in res_t:
-    H_final, _ = srg_mielke(H_mat, stepsize=i, number_of_steps=2)
+for delta_t in time_diffs:
+    H_final, _ = srg_mielke(H_mat, stepsize=delta_t, number_of_steps=2)
     eigenvals, eigenvecs = eigsh(H_final, k=4, which='SA')
     h_pauli = SparsePauliOp.from_operator(H_final.todense())
 
@@ -92,7 +95,7 @@ print(f"Total execution time: {elapsed_time:.4f} seconds")
 
 # Plot number of Pauli terms
 plt.figure(figsize=(10, 6))
-plt.plot(range(len(res_t)), num_paulis, 'b-', linewidth=1.5)
+plt.plot(range(len(time_diffs)), num_paulis, 'b-', linewidth=1.5)
 plt.xlabel('Iteration', fontsize=12)
 plt.ylabel('Number of Pauli Terms', fontsize=12)
 plt.title(f'Random Hamiltonian {job_id} (seed={seed}): Number of Pauli Terms vs SRG Iteration', fontsize=14)
