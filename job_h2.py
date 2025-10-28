@@ -84,7 +84,14 @@ for delta_t in time_diffs:
 
     num_terms = len(h_pauli.paulis)
     num_paulis.append(num_terms)
-    H_pauli_list.append(h_pauli.to_list())
+
+    # Store Pauli decomposition with explicit coefficients and terms
+    pauli_data = {
+        'pauli_strings': [str(pauli) for pauli in h_pauli.paulis],
+        'coefficients': [complex(coeff).real if complex(coeff).imag == 0 else [complex(coeff).real, complex(coeff).imag]
+                        for coeff in h_pauli.coeffs]
+    }
+    H_pauli_list.append(pauli_data)
 
     print(f"Iteration {iteration}: {num_terms} Pauli terms")
     iteration += 1
