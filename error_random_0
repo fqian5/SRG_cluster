@@ -1,5 +1,5 @@
 Traceback (most recent call last):
-  File "/cluster/tufts/lovelab/fqian03/SRG_cluster/job_random_0.py", line 42, in <module>
+  File "/cluster/tufts/lovelab/fqian03/SRG_cluster/job_random_0.py", line 46, in <module>
     s = RK45(derivativeOfHt, 0.0, H0.reshape(N2), 100.0, rtol = 1e-10, atol = 1e-15)
   File "/cluster/tufts/lovelab/fqian03/condaenv/gap/lib/python3.9/site-packages/scipy/integrate/_ivp/rk.py", line 94, in __init__
     self.f = self.fun(self.t, self.y)
@@ -7,6 +7,6 @@ Traceback (most recent call last):
     return self.fun_single(t, y)
   File "/cluster/tufts/lovelab/fqian03/condaenv/gap/lib/python3.9/site-packages/scipy/integrate/_ivp/base.py", line 20, in fun_wrapped
     return np.asarray(fun(t, y), dtype=dtype)
-  File "/cluster/tufts/lovelab/fqian03/SRG_cluster/job_random_0.py", line 39, in derivativeOfHt
-    g = mielke_generator(h)
+  File "/cluster/tufts/lovelab/fqian03/SRG_cluster/job_random_0.py", line 43, in derivativeOfHt
+    g = mielke_generator(h_sparse)
 NameError: name 'mielke_generator' is not defined

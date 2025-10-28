@@ -44,7 +44,7 @@ def derivativeOfHt(t, H_coords):
     dh = g @ h_sparse - h_sparse @ g
     return dh.toarray().reshape(N2)
 
-s = RK45(derivativeOfHt, 0.0, H0.reshape(N2), 100.0, rtol = 1e-10, atol = 1e-15)
+s = RK45(derivativeOfHt, 0.0, H0.reshape(N2), 100.0, rtol = 1e-7, atol = 1e-10)
 res_t = []
 res_y = []
 for i in range(5_000):
@@ -61,6 +61,7 @@ for i in range(5_000):
         break
     if s.status == 'failed':
         print('Failed at step', i, 't =', s.t)
+        print("res_t:", res_t)
         break
     if i % 500 == 0:
         # e_gs_W, psi_gs_W = exact_gs_energy(s.y.reshape(N, N).real)
