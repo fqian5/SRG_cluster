@@ -76,6 +76,7 @@ for delta_t in time_diffs:
     H_final, _ = srg_mielke(H_mat, stepsize=delta_t, number_of_steps=2)
     eigenvals, eigenvecs = eigsh(H_final, k=4, which='SA')
     h_pauli = SparsePauliOp.from_operator(H_final.todense())
+    h_pauli = h_pauli.chop(tol=1e-14)
 
     num_terms_current = len(h_pauli.paulis)
     num_paulis.append(num_terms_current)
