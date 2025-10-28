@@ -30,6 +30,7 @@ H_pauli_list = []
 print("Starting H2 SRG iterations...")
 start_time = time.time()
 H0 = H_mat.toarray()  # Convert sparse matrix to dense array
+H0 = 0.5 * (H0 + H0.conj().T)  # Ensure Hermiticity
 gs_support = []
 
 def derivativeOfHt(t, H_coords):
