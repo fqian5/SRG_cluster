@@ -35,10 +35,14 @@ gs_support = []
 def derivativeOfHt(t, H_coords):
     h = H_coords.reshape(N, N)
 
+    # Convert to sparse matrix for mielke_generator
+    import scipy.sparse as sp
+    h_sparse = sp.csr_matrix(h)
+
     # g = np.diag(np.diag(h)) @ h - h @ np.diag(np.diag(h))
-    g = mielke_generator(h)
-    dh = g @ h - h @ g
-    return dh.reshape(N2)
+    g = mielke_generator(h_sparse)
+    dh = g @ h_sparse - h_sparse @ g
+    return dh.toarray().reshape(N2)
 
 s = RK45(derivativeOfHt, 0.0, H0.reshape(N2), 100.0, rtol = 1e-10, atol = 1e-15)
 res_t = []

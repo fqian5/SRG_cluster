@@ -5,7 +5,7 @@
 #SBATCH -n 1 # tasks requested
 #SBATCH -c 5 # cores requested
 #SBATCH -t 3-00:00:00
-#SBATCH --mem=500000 # memory in Mb
+#SBATCH --mem=50000 # memory in Mb
 #SBATCH -o outputfile_random_1.out # send stdout to outfile
 #SBATCH -e errfile_random_1.out  # send stderr to errfile
 module load miniforge/24.11.2-py312
