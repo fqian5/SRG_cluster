@@ -1,8 +1,14 @@
 Traceback (most recent call last):
   File "/cluster/tufts/lovelab/fqian03/SRG_cluster/job_random_4.py", line 45, in <module>
     s = RK45(derivativeOfHt, 0.0, H0.reshape(N2), 100.0, rtol = 1e-10, atol = 1e-15)
-  File "/cluster/tufts/lovelab/fqian03/condaenv/gap/lib/python3.9/site-packages/scipy/sparse/_base.py", line 158, in reshape
-    shape = check_shape(args, self.shape)
-  File "/cluster/tufts/lovelab/fqian03/condaenv/gap/lib/python3.9/site-packages/scipy/sparse/_sputils.py", line 336, in check_shape
-    raise ValueError('matrix shape must be two-dimensional')
-ValueError: matrix shape must be two-dimensional
+  File "/cluster/tufts/lovelab/fqian03/condaenv/gap/lib/python3.9/site-packages/scipy/integrate/_ivp/rk.py", line 94, in __init__
+    self.f = self.fun(self.t, self.y)
+  File "/cluster/tufts/lovelab/fqian03/condaenv/gap/lib/python3.9/site-packages/scipy/integrate/_ivp/base.py", line 138, in fun
+    return self.fun_single(t, y)
+  File "/cluster/tufts/lovelab/fqian03/condaenv/gap/lib/python3.9/site-packages/scipy/integrate/_ivp/base.py", line 20, in fun_wrapped
+    return np.asarray(fun(t, y), dtype=dtype)
+  File "/cluster/tufts/lovelab/fqian03/SRG_cluster/job_random_4.py", line 41, in derivativeOfHt
+    g = mielke_generator(h)
+  File "/cluster/tufts/lovelab/fqian03/SRG_cluster/srg.py", line 9, in mielke_generator
+    A_csr = A.tocsr()
+AttributeError: 'numpy.ndarray' object has no attribute 'tocsr'
