@@ -45,7 +45,7 @@ def derivativeOfHt(t, H_coords):
     dh = g @ h_sparse - h_sparse @ g
     return dh.toarray().reshape(N2)
 
-s = RK45(derivativeOfHt, 0.0, H0.reshape(N2), 100.0, rtol = 1e-7, atol = 1e-10)
+s = RK45(derivativeOfHt, 0.0, H0.reshape(N2), 1000.0, rtol = 1e-7, atol = 1e-10)
 res_t = []
 res_y = []
 for i in range(5_000):
