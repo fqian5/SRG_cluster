@@ -97,8 +97,7 @@ for i in range(20_000):
     # Store Pauli decomposition with explicit coefficients and terms
     pauli_data = {
         'pauli_strings': [str(pauli) for pauli in h_pauli.paulis],
-        'coefficients': [complex(coeff).real if complex(coeff).imag == 0 else [complex(coeff).real, complex(coeff).imag]
-                        for coeff in h_pauli.coeffs]
+        'coefficients': [[float(coeff.real), float(coeff.imag)] for coeff in h_pauli.coeffs]
     }
     H_pauli_list.append(pauli_data)
 
@@ -112,7 +111,7 @@ print(f"Total execution time: {elapsed_time:.4f} seconds")
 
 # Plot number of Pauli terms
 plt.figure(figsize=(10, 6))
-plt.plot(range(20_000), num_paulis, 'b-', linewidth=1.5)
+plt.plot(range(len(num_paulis)), num_paulis, 'b-', linewidth=1.5)
 plt.axhline(y=2**8, color='r', linestyle='--', linewidth=1, label=f'2^8 = {2**8}')
 plt.axhline(y=4**8, color='g', linestyle='--', linewidth=1, label=f'4^8 = {4**8}')
 plt.xlabel('Iteration', fontsize=12)
