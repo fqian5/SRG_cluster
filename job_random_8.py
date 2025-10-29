@@ -31,54 +31,62 @@ H_pauli_list = []
 
 print("Starting SRG iterations...")
 start_time = time.time()
-H0 = H_mat.toarray()  # Convert sparse matrix to dense array
-H0 = 0.5 * (H0 + H0.conj().T)  # Ensure Hermiticity
-gs_support = []
 
-def derivativeOfHt(t, H_coords):
-    h = H_coords.reshape(N, N)
+# ===== RK45 ADAPTIVE INTEGRATION (COMMENTED OUT) =====
+# H0 = H_mat.toarray()  # Convert sparse matrix to dense array
+# H0 = 0.5 * (H0 + H0.conj().T)  # Ensure Hermiticity
+# gs_support = []
+#
+# def derivativeOfHt(t, H_coords):
+#     h = H_coords.reshape(N, N)
+#
+#     # Convert to sparse matrix for mielke_generator
+#     import scipy.sparse as sp
+#     h_sparse = sp.csr_matrix(h)
+#
+#     # g = np.diag(np.diag(h)) @ h - h @ np.diag(np.diag(h))
+#     g = mielke_generator(h_sparse)
+#     dh = g @ h_sparse - h_sparse @ g
+#     return dh.toarray().reshape(N2)
+#
+# s = RK45(derivativeOfHt, 0.0, H0.reshape(N2), 1000.0, rtol = 1e-10, atol = 1e-15)
+# res_t = []
+# res_y = []
+# for i in range(5_000):
+#     res_t.append(s.t)
+#     res_y.append(s.y)
+#     if i % 1 == 0:
+#         # print('t_' + str(i), '=', res_t[-1])
+#         pass
+#     s.step()
+#     if s.status == 'finished':
+#         res_t.append(s.t)
+#         res_y.append(s.y)
+#         print('Finished')
+#         break
+#     if s.status == 'failed':
+#         print('Failed at step', i, 't =', s.t)
+#         break
+#     if i % 500 == 0:
+#         # e_gs_W, psi_gs_W = exact_gs_energy(s.y.reshape(N, N).real)
+#         # psi_gs_W = psi_gs_W.cleanup(zero_threshold = 1e-9)
+#         # # psi_gs_W.cleanup(zero_threshold=1e-9)
+#         # # psi_gs_W.sort(),
+#         # gs_support.append(psi_gs_W.n_terms)
+#         pass
+#
+# # Calculate time differences
+# time_diffs = [res_t[i+1] - res_t[i] for i in range(len(res_t)-1)]
+#
+# iteration = 1
+# for delta_t in time_diffs:
+#     H_final, _ = srg_mielke(H_mat, stepsize=delta_t, number_of_steps=2)
+# ===== END RK45 ADAPTIVE INTEGRATION =====
 
-    # Convert to sparse matrix for mielke_generator
-    import scipy.sparse as sp
-    h_sparse = sp.csr_matrix(h)
-
-    # g = np.diag(np.diag(h)) @ h - h @ np.diag(np.diag(h))
-    g = mielke_generator(h_sparse)
-    dh = g @ h_sparse - h_sparse @ g
-    return dh.toarray().reshape(N2)
-
-s = RK45(derivativeOfHt, 0.0, H0.reshape(N2), 1000.0, rtol = 1e-10, atol = 1e-15)
-res_t = []
-res_y = []
-for i in range(5_000):
-    res_t.append(s.t)
-    res_y.append(s.y)
-    if i % 1 == 0:
-        # print('t_' + str(i), '=', res_t[-1])
-        pass
-    s.step()
-    if s.status == 'finished':
-        res_t.append(s.t)
-        res_y.append(s.y)
-        print('Finished')
-        break
-    if s.status == 'failed':
-        print('Failed at step', i, 't =', s.t)
-        break
-    if i % 500 == 0:
-        # e_gs_W, psi_gs_W = exact_gs_energy(s.y.reshape(N, N).real)
-        # psi_gs_W = psi_gs_W.cleanup(zero_threshold = 1e-9)
-        # # psi_gs_W.cleanup(zero_threshold=1e-9)
-        # # psi_gs_W.sort(),
-        # gs_support.append(psi_gs_W.n_terms)
-        pass
-
-# Calculate time differences
-time_diffs = [res_t[i+1] - res_t[i] for i in range(len(res_t)-1)]
-
+# Fixed step size iteration
 iteration = 1
-for delta_t in time_diffs:
-    H_final, _ = srg_mielke(H_mat, stepsize=delta_t, number_of_steps=2)
+for i in range(20_000):
+    H_final, _ = srg_mielke(H_mat, stepsize=0.05, number_of_steps=1)
     eigenvals, eigenvecs = eigsh(H_final, k=4, which='SA')
     h_pauli = SparsePauliOp.from_operator(H_final.todense())
     h_pauli = h_pauli.chop(tol=1e-14)
@@ -104,10 +112,13 @@ print(f"Total execution time: {elapsed_time:.4f} seconds")
 
 # Plot number of Pauli terms
 plt.figure(figsize=(10, 6))
-plt.plot(range(len(time_diffs)), num_paulis, 'b-', linewidth=1.5)
+plt.plot(range(20_000), num_paulis, 'b-', linewidth=1.5)
+plt.axhline(y=2**8, color='r', linestyle='--', linewidth=1, label=f'2^8 = {2**8}')
+plt.axhline(y=4**8, color='g', linestyle='--', linewidth=1, label=f'4^8 = {4**8}')
 plt.xlabel('Iteration', fontsize=12)
 plt.ylabel('Number of Pauli Terms', fontsize=12)
 plt.title(f'Random Hamiltonian {job_id} (seed={seed}): Number of Pauli Terms vs SRG Iteration', fontsize=14)
+plt.legend()
 plt.grid(True, alpha=0.3)
 plt.tight_layout()
 plt.savefig(f'plot_random_{job_id}.png', dpi=300)
